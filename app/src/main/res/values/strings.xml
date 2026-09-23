@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Universe</string>
+    <string name="registration">Регистрация</string>
+    <string-array name="faculties_array">
+        <item>ФТС</item>
+        <item>УТТК</item>
+        <item>МТ</item>
+        <item>УПП</item>
+        <item>ПГС</item>
+        <item>ИЭФ</item>
+        <item>МЭИП</item>
+        <item>ФБИ</item>
+        <item>ПУСК</item>
+    </string-array>
+
+</resources>
