@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "833423172483",
+    "project_id": "universe-8f39acf1",
+    "storage_bucket": "universe-8f39acf1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:833423172483:android:49b8f3dccfcc10d1384cb6",
+        "android_client_info": {
+          "package_name": "com.example.universe"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAPJghZDv19OhPAAJtoFI-Ht8q8bFuMfOA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

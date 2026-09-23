@@ -8,25 +8,48 @@
     android:background="@color/back"
     tools:context=".registration">
 
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="0dp"
+        android:layout_height="122dp"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.25"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/subtract_buttom" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="fitXY"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.25"
+        app:srcCompat="@drawable/subtracttop" />
+
     <!-- Заголовок остается неподвижным вверху экрана -->
+
+    <!-- ScrollView управляет прокруткой всех полей ввода -->
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="100dp"
         android:fontFamily="@font/roboto_medium"
         android:text="@string/registration"
-        android:textSize="16sp"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- ScrollView управляет прокруткой всех полей ввода -->
     <ScrollView
         android:id="@+id/scrollView"
-        android:layout_width="309dp"
-        android:layout_height="557dp"
-        android:layout_marginTop="20dp"
+        android:layout_width="288dp"
+        android:layout_height="560dp"
+        android:layout_marginTop="5dp"
         android:layout_marginBottom="20dp"
         android:scrollbars="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -42,7 +65,7 @@
             android:orientation="vertical">
 
             <EditText
-                android:id="@+id/editTextText1"
+                android:id="@+id/editTextName"
                 android:layout_width="match_parent"
                 android:layout_height="54dp"
                 android:layout_marginTop="10dp"
@@ -52,10 +75,11 @@
                 android:inputType="text"
                 android:minHeight="48dp"
                 android:padding="10dp"
+                android:textColor="@color/black"
                 android:textColorHint="@color/hide_text" />
 
             <EditText
-                android:id="@+id/editTextText2"
+                android:id="@+id/editTextSurname"
                 android:layout_width="match_parent"
                 android:layout_height="54dp"
                 android:layout_marginTop="10dp"
@@ -65,124 +89,51 @@
                 android:inputType="text"
                 android:minHeight="48dp"
                 android:padding="10dp"
+                android:textColor="@color/black"
                 android:textColorHint="@color/hide_text" />
 
             <EditText
-                android:id="@+id/editTextText3"
+                android:id="@+id/editTextMail"
                 android:layout_width="match_parent"
                 android:layout_height="54dp"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/edit_text"
                 android:ems="10"
                 android:hint="Почта"
-                android:inputType="text"
+                android:inputType="textEmailAddress"
                 android:minHeight="48dp"
                 android:padding="10dp"
+                android:textColor="@color/black"
                 android:textColorHint="@color/hide_text" />
 
             <EditText
-                android:id="@+id/editTextText4"
+                android:id="@+id/editTextPassword"
                 android:layout_width="match_parent"
                 android:layout_height="54dp"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/edit_text"
                 android:ems="10"
                 android:hint="Пароль"
-                android:inputType="text"
+                android:inputType="textPassword"
                 android:minHeight="48dp"
                 android:padding="10dp"
+                android:textColor="@color/black"
                 android:textColorHint="@color/hide_text" />
 
             <EditText
-                android:id="@+id/editTextText5"
+                android:id="@+id/editTextPassword2"
                 android:layout_width="match_parent"
                 android:layout_height="54dp"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/edit_text"
                 android:ems="10"
                 android:hint="Повторите пароль"
-                android:inputType="text"
+                android:inputType="textPassword"
                 android:minHeight="48dp"
                 android:padding="10dp"
+                android:textColor="@color/black"
                 android:textColorHint="@color/hide_text" />
 
-            <EditText
-                android:id="@+id/editTextText6"
-                android:layout_width="match_parent"
-                android:layout_height="54dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/edit_text"
-                android:ems="10"
-                android:hint="Повторите пароль"
-                android:inputType="text"
-                android:minHeight="48dp"
-                android:padding="10dp"
-                android:textColorHint="@color/hide_text" />
-
-            <EditText
-                android:id="@+id/editTextText7"
-                android:layout_width="match_parent"
-                android:layout_height="54dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/edit_text"
-                android:ems="10"
-                android:hint="Повторите пароль"
-                android:inputType="text"
-                android:minHeight="48dp"
-                android:padding="10dp"
-                android:textColorHint="@color/hide_text" />
-
-            <EditText
-                android:id="@+id/editTextText9"
-                android:layout_width="match_parent"
-                android:layout_height="54dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/edit_text"
-                android:ems="10"
-                android:hint="Повторите пароль"
-                android:inputType="text"
-                android:minHeight="48dp"
-                android:padding="10dp"
-                android:textColorHint="@color/hide_text" />
-
-            <EditText
-                android:id="@+id/editTextText10"
-                android:layout_width="match_parent"
-                android:layout_height="54dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/edit_text"
-                android:ems="10"
-                android:hint="Повторите пароль"
-                android:inputType="text"
-                android:minHeight="48dp"
-                android:padding="10dp"
-                android:textColorHint="@color/hide_text" />
-
-            <EditText
-                android:id="@+id/editTextText11"
-                android:layout_width="match_parent"
-                android:layout_height="54dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/edit_text"
-                android:ems="10"
-                android:hint="Повторите пароль"
-                android:inputType="text"
-                android:minHeight="48dp"
-                android:padding="10dp"
-                android:textColorHint="@color/hide_text" />
-
-            <EditText
-                android:id="@+id/editTextText117"
-                android:layout_width="match_parent"
-                android:layout_height="54dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/edit_text"
-                android:ems="10"
-                android:hint="Повторите пароль"
-                android:inputType="text"
-                android:minHeight="48dp"
-                android:padding="10dp"
-                android:textColorHint="@color/hide_text" />
 
             <Spinner
                 android:id="@+id/spinner1"
@@ -190,9 +141,9 @@
                 android:layout_height="54dp"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/edit_text"
-                android:entries="@array/faculties_array"
                 android:minHeight="48dp"
-                android:paddingStart="10dp" />
+                android:paddingStart="10dp"
+                android:textColor="@color/black" />
 
             <Spinner
                 android:id="@+id/spinner2"
@@ -201,7 +152,21 @@
                 android:layout_marginTop="10dp"
                 android:background="@drawable/edit_text"
                 android:minHeight="48dp"
-                android:paddingStart="10dp" />
+                android:paddingStart="10dp"
+                android:textColor="@color/black" />
+
+            <Button
+                android:id="@+id/btnRegister"
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/singup"
+                android:radius="16dp"
+                android:text="Зарегистрироваться"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                />
 
         </LinearLayout>
     </ScrollView>

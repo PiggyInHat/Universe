@@ -1,15 +1,25 @@
 package com.example.universe
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.EditText
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 class registration : AppCompatActivity() {
-
+    private lateinit var etName: EditText
+    private lateinit var etSurname: EditText
+    private lateinit var etEmail: EditText
+    private lateinit var etPassword: EditText
+    private lateinit var etPassword2: EditText
+    private lateinit var btnRegister: Button
     private lateinit var spinnerFaculty: Spinner
     private lateinit var spinnerGroup: Spinner
 
@@ -21,6 +31,12 @@ class registration : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_registration)
 
+        etName = findViewById(R.id.editTextName)
+        etSurname = findViewById(R.id.editTextSurname)
+        etEmail = findViewById(R.id.editTextMail)
+        etPassword = findViewById(R.id.editTextPassword)
+        etPassword2 = findViewById(R.id.editTextPassword2)
+        btnRegister = findViewById(R.id.btnRegister)
         spinnerFaculty = findViewById(R.id.spinner1)
         spinnerGroup = findViewById(R.id.spinner2)
 
@@ -39,6 +55,10 @@ class registration : AppCompatActivity() {
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
+
+        }
+        btnRegister.setOnClickListener {
+            onRegisterClick()
         }
     }   // ← здесь закрывается onCreate
 
@@ -47,11 +67,11 @@ class registration : AppCompatActivity() {
     private fun setupFacultySpinner() {
         val facultyAdapter = ArrayAdapter(
             this,
-            android.R.layout.simple_spinner_item,
+            R.layout.item_spinner,
             FacultyData.faculties
         ).apply {
             setDropDownViewResource(
-                android.R.layout.simple_spinner_dropdown_item
+                R.layout.item_spinner_dropdown
             )
         }
         spinnerFaculty.adapter = facultyAdapter
@@ -63,11 +83,11 @@ class registration : AppCompatActivity() {
 
         val groupAdapter = ArrayAdapter(
             this,
-            android.R.layout.simple_spinner_item,
+            R.layout.item_spinner,
             groups
         ).apply {
             setDropDownViewResource(
-                android.R.layout.simple_spinner_dropdown_item
+                R.layout.item_spinner_dropdown
             )
         }
         spinnerGroup.adapter = groupAdapter
@@ -88,5 +108,79 @@ class registration : AppCompatActivity() {
             }
         }
     }
+    private fun onRegisterClick() {
+        val name=etName.text.toString().trim()
+        val surname = etSurname.text.toString().trim()
+        val email = etEmail.text.toString().trim()
+        val password = etPassword.text.toString()
+        val password2 = etPassword2.text.toString()
+
+        if(name.isEmpty()||surname.isEmpty()||email.isEmpty()||password.isEmpty()||password2.isEmpty()){
+            Toast.makeText(this, "Заполните поля", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if(!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+            Toast.makeText(this, "Введите корректный email", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (password.length < 6) {
+            Toast.makeText(this, "Пароль минимум 6 символов", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if (password != password2) {
+            Toast.makeText(this, "Пароли не совпадают", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if (selectedFaculty.isEmpty() || selectedGroup.isEmpty()) {
+            Toast.makeText(this, "Выберите факультет и группу", Toast.LENGTH_SHORT).show()
+            return
+        }
+        btnRegister.isEnabled = false
+        btnRegister.text = "Регистрация..."
+
+        val auth = FirebaseAuth.getInstance()
+        val db = FirebaseFirestore.getInstance()
+
+        auth.createUserWithEmailAndPassword(email, password)
+            .addOnSuccessListener { authResult ->
+                val userId = authResult.user?.uid
+                if (userId == null) {
+                    Toast.makeText(this, "Ошибка: нет userId", Toast.LENGTH_SHORT).show()
+                    return@addOnSuccessListener
+                }
+
+                // 4. Создаём объект User и сохраняем в Firestore
+                val user = User(
+                    name = name,
+                    surname = surname,
+                    email = email,
+                    password = password,
+                    faculty = selectedFaculty,
+                    group = selectedGroup
+                )
+
+                db.collection("users")
+                    .document(userId)
+                    .set(user.toMap())
+                    .addOnSuccessListener {
+                        Toast.makeText(this, "Регистрация успешна!", Toast.LENGTH_LONG).show()
+                        startActivity(Intent(this, MainActivity::class.java))
+                        finish()
+                    }
+                    .addOnFailureListener { e ->
+                        Toast.makeText(this, "Ошибка сохранения: ${e.message}", Toast.LENGTH_LONG).show()
+                    }
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Ошибка регистрации: ${e.message}", Toast.LENGTH_LONG).show()
+                // РАЗБЛОКИРУЕМ КНОПКУ при ошибке
+                btnRegister.isEnabled = true
+                btnRegister.text = "Зарегистрироваться"
+            }
+
+    }
+
 
 }   // ← здесь закрывается класс registration
