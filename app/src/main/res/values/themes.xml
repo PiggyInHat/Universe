@@ -3,6 +3,9 @@
     <style name="Base.Theme.Universe" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+
+        <!-- Отключаем встроенный индикатор Material 3 -->
+        <item name="colorSecondaryContainer">@android:color/transparent</item>
     </style>
 
     <style name="Theme.Universe" parent="Base.Theme.Universe" />

@@ -14,7 +14,7 @@ class ServiceAdapter(
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val ivIcon: ImageView = view.findViewById(R.id.ivIcon)
-        val tvName: TextView = view.findViewById(R.id.tvName)
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -26,7 +26,7 @@ class ServiceAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
         holder.ivIcon.setImageResource(item.iconRes)
-        holder.tvName.text = item.name
+
         holder.itemView.setOnClickListener { onClick(item) }
     }
 

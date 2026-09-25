@@ -165,8 +165,11 @@ class registration : AppCompatActivity() {
                     .document(userId)
                     .set(user.toMap())
                     .addOnSuccessListener {
-                        Toast.makeText(this, "Регистрация успешна!", Toast.LENGTH_LONG).show()
-                        startActivity(Intent(this, MainActivity::class.java))
+
+                        FirebaseAuth.getInstance().signOut()
+
+                        Toast.makeText(this, "Регистрация успешна! Войдите.", Toast.LENGTH_LONG).show()
+                        startActivity(Intent(this, login::class.java))
                         finish()
                     }
                     .addOnFailureListener { e ->

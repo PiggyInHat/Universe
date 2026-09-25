@@ -18,14 +18,14 @@ class MainActivity : AppCompatActivity() {
 
         // 1. Список сервисов
         val services = listOf(
-            ServiceItem("Зачётка",          android.R.drawable.ic_menu_agenda),
-            ServiceItem("Учебный план",     android.R.drawable.ic_menu_edit),
-            ServiceItem("Справки",          android.R.drawable.ic_menu_save),
-            ServiceItem("Контрольный срок", android.R.drawable.ic_menu_month),
-            ServiceItem("Пропуск",          android.R.drawable.ic_menu_view),
-            ServiceItem("Библиотека",       android.R.drawable.ic_menu_help),
-            ServiceItem("Практика",         android.R.drawable.ic_menu_manage),
-            ServiceItem("Сотрудники",       android.R.drawable.ic_menu_myplaces)
+            ServiceItem("Зачётка",          R.drawable.creditpass),
+            ServiceItem("Учебный план",     R.drawable.curriculum),
+            ServiceItem("Справки",          R.drawable.certificates),
+            ServiceItem("Контрольный срок", R.drawable.targetdeadline),
+            ServiceItem("Пропуск",          R.drawable.pass),
+            ServiceItem("Библиотека",       R.drawable.library),
+            ServiceItem("Практика",         R.drawable.practice),
+            ServiceItem("Сотрудники",       R.drawable.staff)
         )
 
         // 2. RecyclerView — сетка 3 колонки

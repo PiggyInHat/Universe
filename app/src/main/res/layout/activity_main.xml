@@ -10,22 +10,26 @@
     tools:context=".MainActivity">
 
     <!-- Заголовок -->
+
+    <!-- Сетка сервисов -->
+
     <TextView
         android:id="@+id/tvTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="#FFFFFF"
+        android:layout_marginTop="45dp"
+        android:background="@drawable/title"
         android:padding="16dp"
         android:text="СЕРВИСЫ"
         android:textAlignment="center"
         android:textColor="#000000"
         android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Сетка сервисов -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerServices"
         android:layout_width="0dp"
@@ -44,9 +48,11 @@
         android:layout_height="wrap_content"
         android:background="#FFFFFF"
         app:menu="@menu/bottom_menu"
-        app:labelVisibilityMode="labeled"
-        app:itemIconTint="@color/black"
-        app:itemTextColor="@color/black"
+        app:labelVisibilityMode="unlabeled"
+        app:itemIconSize="24dp"
+        app:itemIconTint="@color/bottom_nav_colors"
+        app:itemBackground="@drawable/nav_item_background"
+        app:itemRippleColor="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
