@@ -42,7 +42,8 @@ class MainActivity : AppCompatActivity() {
             ServiceItem("Пропуск",          R.drawable.pass),
             ServiceItem("Библиотека",       R.drawable.library),
             ServiceItem("Практика",         R.drawable.practice),
-            ServiceItem("Сотрудники",       R.drawable.staff)
+            ServiceItem("Сотрудники",       R.drawable.staff),
+            ServiceItem("Обратная связь",   R.drawable.feedback)
         )
 
         // 2. RecyclerView — сетка 3 колонки
@@ -57,9 +58,13 @@ class MainActivity : AppCompatActivity() {
                 "Практика" -> {
                     Toast.makeText(this, "Практика — позже", Toast.LENGTH_SHORT).show()
                 }
+                "Обратная связь" -> {
+                startActivity(Intent(this, FeedbackActivity::class.java))
+                }
                 else -> {
                     Toast.makeText(this, item.name, Toast.LENGTH_SHORT).show()
                 }
+
             }
         }
 

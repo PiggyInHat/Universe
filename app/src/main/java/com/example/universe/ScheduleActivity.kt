@@ -2,6 +2,7 @@ package com.example.universe
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,7 +24,9 @@ class ScheduleActivity : AppCompatActivity() {
 
         recycler = findViewById(R.id.recyclerSchedule)
         recycler.layoutManager = LinearLayoutManager(this)
-
+        findViewById<ImageView>(R.id.btnBack).setOnClickListener {
+            finish()
+        }
         // Навигация
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
         bottomNav.selectedItemId = R.id.nav_schedule

@@ -3,6 +3,7 @@ package com.example.universe
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -30,7 +31,9 @@ class ProfileActivity : AppCompatActivity() {
 
         // Загрузка данных из Firestore
         loadProfile()
-
+        findViewById<ImageView>(R.id.btnBack).setOnClickListener {
+            finish()
+        }
         // Кнопка "Выйти"
         btnLogout.setOnClickListener {
             FirebaseAuth.getInstance().signOut()
