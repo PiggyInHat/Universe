@@ -1,6 +1,7 @@
 package com.example.universe
 
 import android.content.Intent
+
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -15,7 +16,23 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
+        Thread {
+            try {
+                val groupId = ScheduleParser.getGroupId(2, "БИСТ-311")
+                android.util.Log.d("SCHEDULE", "Group ID: $groupId")
 
+                if (groupId != null) {
+                    val schedule = ScheduleParser.getSchedule(groupId, "2026-10-16")
+                    android.util.Log.d("SCHEDULE", "Loaded: ${schedule.size} items")
+
+                    for (item in schedule) {
+                        android.util.Log.d("SCHEDULE", "${item.date} ${item.startTime} ${item.subject} ${item.auditorium} ${item.teacher}")
+                    }
+                }
+            } catch (e: Exception) {
+                android.util.Log.e("SCHEDULE", "Error: ${e.message}")
+            }
+        }.start()
         // 1. Список сервисов
         val services = listOf(
             ServiceItem("Зачётка",          R.drawable.creditpass),
@@ -57,12 +74,11 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.nav_schedule -> {
                     // startActivity(Intent(this, ScheduleActivity::class.java))
-                    Toast.makeText(this, "Расписание — позже", Toast.LENGTH_SHORT).show()
+                    startActivity(Intent(this, ScheduleActivity::class.java))
                     true
                 }
                 R.id.nav_profile -> {
-                    // startActivity(Intent(this, ProfileActivity::class.java))
-                    Toast.makeText(this, "Профиль — позже", Toast.LENGTH_SHORT).show()
+                    startActivity(Intent(this, ProfileActivity::class.java))
                     true
                 }
                 else -> false

@@ -42,7 +42,8 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
-
+    implementation("org.jsoup:jsoup:1.17.2")
+    implementation("com.google.code.gson:gson:2.10.1")
     // Firebase — прямые версии
     implementation(platform("com.google.firebase:firebase-bom:33.5.1"))
     implementation("com.google.firebase:firebase-auth-ktx")
