@@ -1,7 +1,6 @@
 package com.example.universe
 
 import android.content.Intent
-
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -16,6 +15,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
+
         Thread {
             try {
                 val groupId = ScheduleParser.getGroupId(2, "БИСТ-311")
@@ -33,6 +33,7 @@ class MainActivity : AppCompatActivity() {
                 android.util.Log.e("SCHEDULE", "Error: ${e.message}")
             }
         }.start()
+
         // 1. Список сервисов
         val services = listOf(
             ServiceItem("Зачётка",          R.drawable.creditpass),
@@ -59,12 +60,11 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this, "Практика — позже", Toast.LENGTH_SHORT).show()
                 }
                 "Обратная связь" -> {
-                startActivity(Intent(this, FeedbackActivity::class.java))
+                    startActivity(Intent(this, FeedbackActivity::class.java))
                 }
                 else -> {
                     Toast.makeText(this, item.name, Toast.LENGTH_SHORT).show()
                 }
-
             }
         }
 
@@ -78,7 +78,6 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.nav_schedule -> {
-                    // startActivity(Intent(this, ScheduleActivity::class.java))
                     startActivity(Intent(this, ScheduleActivity::class.java))
                     true
                 }
@@ -89,5 +88,25 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
+
+        // ⬇⬇⬇ ПРОВЕРКА ОБНОВЛЕНИЙ ПРИ ЗАПУСКЕ (РАЗ В 24 ЧАСА) ⬇⬇⬇
+        UpdateChecker.checkForUpdate(this) { release ->
+            if (release != null) {
+                runOnUiThread {
+                    androidx.appcompat.app.AlertDialog.Builder(this)
+                        .setTitle("Доступно обновление ${release.tag_name}")
+                        .setMessage("Вышла новая версия приложения. Установить?")
+                        .setPositiveButton("Обновить") { _, _ ->
+                            val apkAsset = release.assets.find { it.name.endsWith(".apk") }
+                            if (apkAsset != null) {
+                                UpdateChecker.downloadAndInstall(this, apkAsset.browser_download_url)
+                            }
+                        }
+                        .setNegativeButton("Позже", null)
+                        .show()
+                }
+            }
+        }
+        // ⬆⬆⬆ КОНЕЦ ПРОВЕРКИ ОБНОВЛЕНИЙ ⬆⬆⬆
     }
 }

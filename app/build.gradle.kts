@@ -9,6 +9,9 @@ android {
             minorApiLevel = 1
         }
     }
+    buildFeatures {
+        buildConfig = true
+    }
 
     defaultConfig {
         applicationId = "com.example.universe"

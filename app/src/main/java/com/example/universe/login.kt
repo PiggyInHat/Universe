@@ -59,9 +59,43 @@ class login : AppCompatActivity() {
                 finish()
             }
             .addOnFailureListener { e ->
+                // ⬇⬇⬇ ПРАВИЛЬНЫЕ ОШИБКИ ДЛЯ ВХОДА ⬇⬇⬇
+                val errorMessage = when {
+                    // 1. Пользователь с таким email не найден
+                    e.message?.contains("no user record") == true ||
+                            e.message?.contains("user-not-found") == true ->
+                        "Пользователь с таким email не найден. Зарегистрируйтесь."
+
+                    // 2. Пароль неверный
+                    e.message?.contains("password is invalid") == true ||
+                            e.message?.contains("wrong-password") == true ->
+                        "Неверный пароль"
+
+                    // 3. Некорректный формат email
+                    e.message?.contains("badly formatted") == true ||
+                            e.message?.contains("invalid-email") == true ->
+                        "Введите корректный email"
+
+                    // 4. Проблемы с интернетом
+                    e.message?.contains("network error") == true ||
+                            e.message?.contains("network-request-failed") == true ->
+                        "Ошибка сети. Проверьте интернет"
+
+                    // 5. Слишком много попыток
+                    e.message?.contains("too many requests") == true ||
+                            e.message?.contains("too-many-requests") == true ->
+                        "Слишком много попыток. Попробуйте позже"
+
+                    // 6. Все остальные ошибки
+                    else ->
+                        "Не удалось войти. Попробуйте позже"
+                }
+
+                Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
+
+                // ⬇⬇⬇ ВОЗВРАЩАЕМ КНОПКУ ВХОДА В РАБОЧЕЕ СОСТОЯНИЕ ⬇⬇⬇
                 btnLogin.isEnabled = true
                 btnLogin.text = "Войти"
-                Toast.makeText(this, "Ошибка: ${e.message}", Toast.LENGTH_LONG).show()
             }
     }
 }

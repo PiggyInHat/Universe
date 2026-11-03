@@ -24,9 +24,12 @@ class ScheduleActivity : AppCompatActivity() {
 
         recycler = findViewById(R.id.recyclerSchedule)
         recycler.layoutManager = LinearLayoutManager(this)
+
+        // Стрелочка назад
         findViewById<ImageView>(R.id.btnBack).setOnClickListener {
             finish()
         }
+
         // Навигация
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
         bottomNav.selectedItemId = R.id.nav_schedule
@@ -39,13 +42,13 @@ class ScheduleActivity : AppCompatActivity() {
             }
         }
 
-        // 1. Кэш
+        // 1. Показываем кэш
         val cached = ScheduleCache.loadSchedule(this)
         if (cached.isNotEmpty()) {
             recycler.adapter = ScheduleAdapter(cached)
         }
 
-        // 2. Сайт
+        // 2. Загружаем с сайта
         loadFromSite()
     }
 
@@ -56,27 +59,42 @@ class ScheduleActivity : AppCompatActivity() {
         db.collection("users").document(currentUser.uid).get()
             .addOnSuccessListener { document ->
                 val groupName = document.getString("group") ?: "БИСТ-311"
-                fetchSchedule(groupName)
+                val facultyName = document.getString("faculty") ?: "ФБИ"
+                fetchSchedule(groupName, facultyName)
             }
-            .addOnFailureListener { fetchSchedule("БИСТ-311") }
+            .addOnFailureListener {
+                // Если Firestore не ответил — используем дефолтные значения
+                fetchSchedule("БИСТ-311", "ФБИ")
+            }
     }
 
-    private fun fetchSchedule(groupName: String) {
+    private fun fetchSchedule(groupName: String, facultyName: String) {
         // Берем сегодняшнюю дату
         val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
 
+        // ⬇⬇⬇ ИСПРАВЛЕНО: получаем ID факультета ⬇⬇⬇
+        val facultyId = FacultyMapping.facultyToId[facultyName] ?: 2
+        // ⬆⬆⬆
+
         Thread {
             try {
-                val groupId = ScheduleParser.getGroupId(2, groupName)
+                val groupId = ScheduleParser.getGroupId(facultyId, groupName)
                 if (groupId != null) {
                     val schedule = ScheduleParser.getSchedule(groupId, currentDate)
                     if (schedule.isNotEmpty()) {
                         ScheduleCache.saveSchedule(this, schedule, currentDate)
 
                         runOnUiThread {
-                            // Просто показываем всё как есть
                             recycler.adapter = ScheduleAdapter(schedule)
                         }
+                    } else {
+                        runOnUiThread {
+                            Toast.makeText(this, "На этот день пар нет", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                } else {
+                    runOnUiThread {
+                        Toast.makeText(this, "Группа не найдена", Toast.LENGTH_SHORT).show()
                     }
                 }
             } catch (e: Exception) {
