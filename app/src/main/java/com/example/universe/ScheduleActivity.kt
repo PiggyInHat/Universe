@@ -2,8 +2,11 @@ package com.example.universe
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,6 +20,7 @@ import java.util.Locale
 class ScheduleActivity : AppCompatActivity() {
 
     private lateinit var recycler: RecyclerView
+    private lateinit var tvTitle: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,10 +28,16 @@ class ScheduleActivity : AppCompatActivity() {
 
         recycler = findViewById(R.id.recyclerSchedule)
         recycler.layoutManager = LinearLayoutManager(this)
+        tvTitle = findViewById(R.id.tvTitle)
 
         // Стрелочка назад
         findViewById<ImageView>(R.id.btnBack).setOnClickListener {
             finish()
+        }
+
+        // Кнопка поиска преподавателя
+        findViewById<ImageView>(R.id.btnSearch).setOnClickListener {
+            showSearchDialog()
         }
 
         // Навигация
@@ -35,9 +45,17 @@ class ScheduleActivity : AppCompatActivity() {
         bottomNav.selectedItemId = R.id.nav_schedule
         bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.nav_home -> { startActivity(Intent(this, MainActivity::class.java)); finish(); true }
+                R.id.nav_home -> {
+                    startActivity(Intent(this, MainActivity::class.java))
+                    finish()
+                    true
+                }
                 R.id.nav_schedule -> true
-                R.id.nav_profile -> { startActivity(Intent(this, ProfileActivity::class.java)); finish(); true }
+                R.id.nav_profile -> {
+                    startActivity(Intent(this, ProfileActivity::class.java))
+                    finish()
+                    true
+                }
                 else -> false
             }
         }
@@ -48,7 +66,7 @@ class ScheduleActivity : AppCompatActivity() {
             recycler.adapter = ScheduleAdapter(cached)
         }
 
-        // 2. Загружаем с сайта
+        // 2. Загружаем с сайта (свою группу)
         loadFromSite()
     }
 
@@ -63,18 +81,16 @@ class ScheduleActivity : AppCompatActivity() {
                 fetchSchedule(groupName, facultyName)
             }
             .addOnFailureListener {
-                // Если Firestore не ответил — используем дефолтные значения
                 fetchSchedule("БИСТ-311", "ФБИ")
             }
     }
 
     private fun fetchSchedule(groupName: String, facultyName: String) {
-        // Берем сегодняшнюю дату
-        val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+        // Возвращаем заголовок на место, если до этого искали преподавателя
+        tvTitle.text = "РАСПИСАНИЕ"
 
-        // ⬇⬇⬇ ИСПРАВЛЕНО: получаем ID факультета ⬇⬇⬇
+        val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
         val facultyId = FacultyMapping.facultyToId[facultyName] ?: 2
-        // ⬆⬆⬆
 
         Thread {
             try {
@@ -83,7 +99,6 @@ class ScheduleActivity : AppCompatActivity() {
                     val schedule = ScheduleParser.getSchedule(groupId, currentDate)
                     if (schedule.isNotEmpty()) {
                         ScheduleCache.saveSchedule(this, schedule, currentDate)
-
                         runOnUiThread {
                             recycler.adapter = ScheduleAdapter(schedule)
                         }
@@ -103,5 +118,99 @@ class ScheduleActivity : AppCompatActivity() {
                 }
             }
         }.start()
+    }
+
+    // --- ЛОГИКА ПОИСКА ПРЕПОДАВАТЕЛЯ ---
+
+    private fun showSearchDialog() {
+        val input = EditText(this).apply {
+            hint = "Введите фамилию преподавателя..."
+            setPadding(40, 40, 40, 40)
+        }
+
+        AlertDialog.Builder(this)
+            .setTitle("Поиск преподавателя")
+            .setView(input)
+            .setPositiveButton("Искать") { _, _ ->
+                val query = input.text.toString().trim()
+                if (query.isNotEmpty()) {
+                    performLecturerSearch(query)
+                }
+            }
+            .setNegativeButton("Отмена", null)
+            .show()
+    }
+
+    private fun performLecturerSearch(query: String) {
+        Toast.makeText(this, "Поиск...", Toast.LENGTH_SHORT).show()
+
+        Thread {
+            try {
+                val lecturers = ScheduleParser.searchLecturers(query)
+
+                runOnUiThread {
+                    if (lecturers.isEmpty()) {
+                        Toast.makeText(this, "Преподаватель не найден", Toast.LENGTH_SHORT).show()
+                    } else if (lecturers.size == 1) {
+                        // Если найден только один — сразу грузим его расписание
+                        loadLecturerSchedule(lecturers[0].first, lecturers[0].second)
+                    } else {
+                        // Если найдено несколько — показываем список
+                        val names = lecturers.map { it.first }.toTypedArray()
+                        AlertDialog.Builder(this)
+                            .setTitle("Выберите преподавателя")
+                            .setItems(names) { _, which ->
+                                loadLecturerSchedule(lecturers[which].first, lecturers[which].second)
+                            }
+                            .show()
+                    }
+                }
+            } catch (e: Exception) {
+                runOnUiThread {
+                    Toast.makeText(this, "Ошибка сети", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }.start()
+    }
+
+    private fun loadLecturerSchedule(name: String, lecturerId: String) {
+        // ⬇⬇⬇ ФОРМАТИРОВАНИЕ: "Уланов Алексей Александрович" -> "УЛАНОВ А.А." ⬇⬇⬇
+        val parts = name.split(" ").filter { it.isNotBlank() }
+        val formattedName = if (parts.size >= 3) {
+            val surname = parts[0]
+            val firstNameInitial = parts[1].firstOrNull()?.let { "$it." } ?: ""
+            val patronymicInitial = parts[2].firstOrNull()?.let { "$it." } ?: ""
+            "$surname $firstNameInitial$patronymicInitial"
+        } else {
+            name // Если формат нестандартный, оставляем как есть
+        }
+        tvTitle.text = formattedName.uppercase()
+        // ⬆⬆⬆
+
+        val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+
+        Thread {
+            try {
+                val schedule = ScheduleParser.getScheduleByLecturer(lecturerId, currentDate)
+
+                runOnUiThread {
+                    if (schedule.isNotEmpty()) {
+                        recycler.adapter = ScheduleAdapter(schedule)
+                    } else {
+                        Toast.makeText(this, "На этот день пар нет", Toast.LENGTH_SHORT).show()
+                        recycler.adapter = null
+                    }
+                }
+            } catch (e: Exception) {
+                runOnUiThread {
+                    Toast.makeText(this, "Ошибка загрузки", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }.start()
+    }
+    override fun onResume() {
+        super.onResume()
+        // Принудительно подсвечиваем "Расписание" при возврате
+        findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(R.id.bottomNav).selectedItemId = R.id.nav_schedule
     }
 }

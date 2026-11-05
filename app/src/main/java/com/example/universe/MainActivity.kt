@@ -79,10 +79,12 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.nav_schedule -> {
                     startActivity(Intent(this, ScheduleActivity::class.java))
+
                     true
                 }
                 R.id.nav_profile -> {
                     startActivity(Intent(this, ProfileActivity::class.java))
+
                     true
                 }
                 else -> false
@@ -107,6 +109,12 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
         // ⬆⬆⬆ КОНЕЦ ПРОВЕРКИ ОБНОВЛЕНИЙ ⬆⬆⬆
+    }
+    override fun onResume() {
+        super.onResume()
+        // Принудительно подсвечиваем "Главную" при возврате на этот экран
+        findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(R.id.bottomNav).selectedItemId = R.id.nav_home
     }
 }

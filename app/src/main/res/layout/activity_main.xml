@@ -10,9 +10,6 @@
     tools:context=".MainActivity">
 
     <!-- Заголовок -->
-
-    <!-- Сетка сервисов -->
-
     <TextView
         android:id="@+id/tvTitle"
         android:layout_width="0dp"
@@ -30,6 +27,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Сетка сервисов -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerServices"
         android:layout_width="0dp"
@@ -51,6 +49,7 @@
         app:labelVisibilityMode="unlabeled"
         app:itemIconSize="24dp"
         app:itemIconTint="@color/bottom_nav_colors"
+        app:itemTextColor="@color/bottom_nav_colors"
         app:itemBackground="@drawable/nav_item_background"
         app:itemRippleColor="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -5,6 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#E3F0F5">
+
+    <!-- Кнопка Назад -->
     <ImageView
         android:id="@+id/btnBack"
         android:layout_width="48dp"
@@ -15,7 +17,8 @@
         android:background="?attr/selectableItemBackgroundBorderless"
         android:elevation="10dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tvTitle"  />
+        app:layout_constraintTop_toTopOf="@id/tvTitle" />
+
     <!-- Заголовок -->
     <TextView
         android:id="@+id/tvTitle"
@@ -54,14 +57,13 @@
                 android:orientation="horizontal"
                 android:gravity="center_vertical">
 
-                <!-- Фото (прямоугольное окно) -->
+                <!-- Фото -->
                 <ImageView
                     android:id="@+id/ivAvatar"
                     android:layout_width="115dp"
                     android:layout_height="170dp"
                     android:background="@drawable/avatar"
-                    android:scaleType="centerCrop"
-                     />
+                    android:scaleType="centerCrop" />
 
                 <!-- Данные справа -->
                 <LinearLayout
@@ -126,7 +128,7 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- Bottom Navigation -->
+    <!-- Bottom Navigation (точно такая же, как на других экранах) -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNav"
         android:layout_width="0dp"
@@ -134,8 +136,11 @@
         android:background="#FFFFFF"
         app:menu="@menu/bottom_menu"
         app:labelVisibilityMode="unlabeled"
-        app:itemIconTint="@color/black"
-        app:itemTextColor="@color/black"
+        app:itemIconSize="24dp"
+        app:itemIconTint="@color/bottom_nav_colors"
+        app:itemTextColor="@color/bottom_nav_colors"
+        app:itemBackground="@drawable/nav_item_background"
+        app:itemRippleColor="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

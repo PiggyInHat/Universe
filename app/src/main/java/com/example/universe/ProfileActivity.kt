@@ -93,4 +93,9 @@ class ProfileActivity : AppCompatActivity() {
                 Toast.makeText(this, "Ошибка загрузки: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
+    override fun onResume() {
+        super.onResume()
+        // Принудительно подсвечиваем "Профиль" при возврате
+        findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(R.id.bottomNav).selectedItemId = R.id.nav_profile
+    }
 }

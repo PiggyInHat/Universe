@@ -5,6 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#E3F0F5">
+
+    <!-- Кнопка Назад -->
     <ImageView
         android:id="@+id/btnBack"
         android:layout_width="48dp"
@@ -15,7 +17,8 @@
         android:background="?attr/selectableItemBackgroundBorderless"
         android:elevation="10dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tvTitle"  />
+        app:layout_constraintTop_toTopOf="@id/tvTitle" />
+
     <!-- Заголовок -->
     <TextView
         android:id="@+id/tvTitle"
@@ -32,12 +35,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- Кнопка Поиска преподавателя (лупа) -->
+    <ImageView
+        android:id="@+id/btnSearch"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="8dp"
+        android:padding="12dp"
+        android:src="@android:drawable/ic_menu_search"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        app:layout_constraintBottom_toBottomOf="@id/tvTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tvTitle" />
+
     <!-- Лента расписания -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerSchedule"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:padding="8dp"
+        android:clipToPadding="false"
         app:layout_constraintTop_toBottomOf="@id/tvTitle"
         app:layout_constraintBottom_toTopOf="@id/bottomNav"
         app:layout_constraintStart_toStartOf="parent"
@@ -51,8 +68,11 @@
         android:background="#FFFFFF"
         app:menu="@menu/bottom_menu"
         app:labelVisibilityMode="unlabeled"
-        app:itemIconTint="@color/black"
-        app:itemTextColor="@color/black"
+        app:itemIconSize="24dp"
+        app:itemIconTint="@color/bottom_nav_colors"
+        app:itemTextColor="@color/bottom_nav_colors"
+        app:itemBackground="@drawable/nav_item_background"
+        app:itemRippleColor="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
