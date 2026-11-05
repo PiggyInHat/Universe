@@ -54,7 +54,6 @@ class MainActivity : AppCompatActivity() {
             when (item.name) {
                 "Справки" -> {
                     Toast.makeText(this, "Справки — позже", Toast.LENGTH_SHORT).show()
-                    // startActivity(Intent(this, SpravkiActivity::class.java))
                 }
                 "Практика" -> {
                     Toast.makeText(this, "Практика — позже", Toast.LENGTH_SHORT).show()
@@ -70,28 +69,23 @@ class MainActivity : AppCompatActivity() {
 
         // 3. Bottom Navigation
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
-        bottomNav.selectedItemId = R.id.nav_home   // подсветить "Главная"
+        bottomNav.selectedItemId = R.id.nav_home
         bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.nav_home -> {
-                    // Мы уже на главной — ничего не делаем
-                    true
-                }
+                R.id.nav_home -> true
                 R.id.nav_schedule -> {
                     startActivity(Intent(this, ScheduleActivity::class.java))
-
                     true
                 }
                 R.id.nav_profile -> {
                     startActivity(Intent(this, ProfileActivity::class.java))
-
                     true
                 }
                 else -> false
             }
         }
 
-        // ⬇⬇⬇ ПРОВЕРКА ОБНОВЛЕНИЙ ПРИ ЗАПУСКЕ (РАЗ В 24 ЧАСА) ⬇⬇⬇
+        // ⬇⬇⬇ ПРОВЕРКА ОБНОВЛЕНИЙ ⬇⬇⬇
         UpdateChecker.checkForUpdate(this) { release ->
             if (release != null) {
                 runOnUiThread {
@@ -109,12 +103,11 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-
-        // ⬆⬆⬆ КОНЕЦ ПРОВЕРКИ ОБНОВЛЕНИЙ ⬆⬆⬆
+        // ⬆⬆⬆ КОНЕЦ ПРОВЕРКИ ⬆⬆⬆
     }
+
     override fun onResume() {
         super.onResume()
-        // Принудительно подсвечиваем "Главную" при возврате на этот экран
         findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(R.id.bottomNav).selectedItemId = R.id.nav_home
     }
 }

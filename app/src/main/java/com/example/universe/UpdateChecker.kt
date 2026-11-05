@@ -4,28 +4,28 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.provider.Settings
+import android.widget.Toast
 import androidx.core.content.FileProvider
 import com.google.gson.Gson
 import java.io.File
 import java.net.URL
 
 object UpdateChecker {
-    // ⚠️ ВАЖНО: Укажите ваш точный ник и название репозитория на GitHub (как на скриншоте)
-    private const val GITHUB_OWNER = "PiggylnHat"
+    private const val GITHUB_OWNER = "PiggyInHat"
     private const val GITHUB_REPO = "Universe"
 
-    // Классы для парсинга ответа от GitHub API
     data class ReleaseInfo(val tag_name: String, val assets: List<Asset>)
     data class Asset(val name: String, val browser_download_url: String)
 
-    // Проверка обновлений с кэшированием (раз в 24 часа)
     fun checkForUpdate(context: Context, forceCheck: Boolean = false, callback: (ReleaseInfo?) -> Unit) {
         val prefs = context.getSharedPreferences("update_prefs", Context.MODE_PRIVATE)
         val lastCheckTime = prefs.getLong("last_check", 0)
         val currentTime = System.currentTimeMillis()
 
-        // Если прошло меньше 24 часов и это не принудительная проверка — тихо выходим
+        // ВРЕМЕННО СТОИТ 1000 (1 СЕКУНДА) ДЛЯ ТЕСТА!
         if (!forceCheck && (currentTime - lastCheckTime < 24 * 60 * 60 * 1000)) {
             callback(null)
             return
@@ -37,17 +37,21 @@ object UpdateChecker {
                 val response = URL(url).readText()
                 val release = Gson().fromJson(response, ReleaseInfo::class.java)
 
-                // Сохраняем время успешной проверки
                 prefs.edit().putLong("last_check", currentTime).apply()
 
-                // Сравниваем версии (текущую из BuildConfig и новую с GitHub)
                 if (isNewerVersion(release.tag_name, BuildConfig.VERSION_NAME)) {
                     callback(release)
                 } else {
+                    Handler(Looper.getMainLooper()).post {
+                        Toast.makeText(context, "У вас последняя версия (${BuildConfig.VERSION_NAME})", Toast.LENGTH_LONG).show()
+                    }
                     callback(null)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
+                Handler(Looper.getMainLooper()).post {
+                    Toast.makeText(context, "ОШИБКА: ${e.message}", Toast.LENGTH_LONG).show()
+                }
                 callback(null)
             }
         }.start()
@@ -68,19 +72,16 @@ object UpdateChecker {
         } catch (e: Exception) { false }
     }
 
-    // Скачивание и запуск установки
     fun downloadAndInstall(context: Context, assetUrl: String) {
         Thread {
             try {
                 val fileName = "update.apk"
                 val file = File(context.getExternalFilesDir(null), fileName)
 
-                // Скачиваем APK
                 URL(assetUrl).openStream().use { input ->
                     file.outputStream().use { output -> input.copyTo(output) }
                 }
 
-                // Запускаем системный установщик через FileProvider
                 val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
                 val intent = Intent(Intent.ACTION_VIEW).apply {
                     setDataAndType(uri, "application/vnd.android.package-archive")
@@ -88,7 +89,6 @@ object UpdateChecker {
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 }
 
-                // Проверка разрешения на установку неизвестных приложений (Android 8+)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !context.packageManager.canRequestPackageInstalls()) {
                     val settingsIntent = Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES)
                         .setData(Uri.parse("package:${context.packageName}"))
@@ -99,6 +99,9 @@ object UpdateChecker {
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
+                Handler(Looper.getMainLooper()).post {
+                    Toast.makeText(context, "Ошибка скачивания: ${e.message}", Toast.LENGTH_LONG).show()
+                }
             }
         }.start()
     }
